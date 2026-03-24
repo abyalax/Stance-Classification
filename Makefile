@@ -12,7 +12,7 @@ PIPELINE = pipelines/main.py
 
 ## Install semua dependencies
 install:
-	uv add pandas instaloader Pillow matplotlib seaborn
+	uv sync
 
 # ─────────────────────────────────────────────
 #  PIPELINE
@@ -22,17 +22,45 @@ install:
 all:
 	$(PYTHON) $(PIPELINE) --stage all
 
-## Stage 1: Scraping komentar Instagram
+## Stage 1: Scraping komentar for all platform
 collect:
-	$(PYTHON) $(PIPELINE) --stage collect
+	$(PYTHON) $(PIPELINE) --stage collect --platform all
+
+## Stage 1: Scraping komentar on youtube only
+collect-youtube:
+	$(PYTHON) $(PIPELINE) --stage collect --platform youtube
+
+## Stage 1: Scraping komentar on tiktok only
+collect-tiktok:
+	$(PYTHON) $(PIPELINE) --stage collect --platform tiktok
+
+## Force rerun Stage 1: Scraping komentar Instagram
+collect-force:
+	$(PYTHON) $(PIPELINE) --stage collect --force --platform all
+
+## Stage 1: Scraping komentar on youtube only
+collect-youtube-force:
+	$(PYTHON) $(PIPELINE) --stage collect --force --platform youtube
+
+## Stage 1: Scraping komentar on tiktok only
+collect-tiktok-force:
+	$(PYTHON) $(PIPELINE) --stage collect --force --platform tiktok
 
 ## Stage 2: Preprocessing & cleaning teks
 preprocess:
 	$(PYTHON) $(PIPELINE) --stage preprocess
 
+## Force rerun Stage 2: Preprocessing & cleaning teks
+preprocess-force:
+	$(PYTHON) $(PIPELINE) --stage preprocess --force
+
 ## Stage 3: Persiapan dataset untuk labeling di Label Studio
 label:
 	$(PYTHON) $(PIPELINE) --stage label
+
+## Force rerun Stage 3: Persiapan dataset untuk labeling di Label Studio
+label-force:
+	$(PYTHON) $(PIPELINE) --stage label --force
 
 ## Cek status tiap stage pipeline
 status:
@@ -64,4 +92,4 @@ help:
 	@echo "  make install → make login → make all"
 	@echo ""
 
-.PHONY: login login-brave login-chrome install all collect preprocess label status force clean help
+.PHONY: install all collect collect-force preprocess preprocess-force label label-force status force clean help

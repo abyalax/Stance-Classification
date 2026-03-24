@@ -1,90 +1,128 @@
-# Stance Classification Pipeline
+# Stance Classification Opini Publik terhadap Program Makan Bergizi Gratis (MBG)
 
-Pipeline untuk klasifikasi stance opini publik terhadap isu ketahanan energi dan kebijakan fiskal Indonesia pada komentar Instagram @ferryirwandi.
+Pipeline untuk klasifikasi stance opini publik terhadap Program Makan Bergizi Gratis (MBG) pada komentar media sosial (TikTok + YouTube) menggunakan IndoBERT.
 
-## Struktur Proyek
+---
+
+## 📊 Research Context
+
+**Judul Penelitian**: Stance Classification Opini Publik terhadap Program Makan Bergizi Gratis (MBG) pada Komentar Media Sosial Menggunakan IndoBERT
+
+**Konteks Isu**: Presiden Prabowo Subianto memastikan program **Makan Bergizi Gratis (MBG)** tetap berjalan di tengah tekanan efisiensi anggaran akibat dampak konflik Timur Tengah terhadap harga energi global (22 Maret 2026).
+
+**Data Sources**:
+- **TikTok**: 3.903 komentar dari video pernyataan Prabowo MBG
+- **YouTube**: 1.283 komentar dari video pernyataan Prabowo MBG  
+- **Total**: 5.186 komentar
+
+**Label Schema**: 8 kelas stance (FAVOR, AGAINST, PRO_GOV, CONTRA_GOV, CONDITIONAL, SUGGESTION, DISCUSSION, OFF_TOPIC)
+
+---
+
+## 🏗️ Struktur Proyek
 
 ```
 stance-classification/
 ├── pipelines/
-│   └── main.py                  # Entry point pipeline
+│   ├── main.py                  # Entry point pipeline
+│   ├── 01_collect_data.py       # Data collection (TikTok + YouTube)
+│   ├── 02_preprocess_data.py    # Preprocessing & cleaning
+│   └── 03_prepare_labeling.py   # Labeling preparation
 ├── data/
-│   ├── comments_raw.csv         # Output: raw comments
-│   ├── comments_processed.csv   # Output: preprocessed comments
-│   ├── posts_metadata.csv       # Output: post metadata
-│   ├── scraping_summary.json    # Output: scraping summary
-│   ├── preprocessing_analysis.json
-│   ├── data_quality_report.png
-│   ├── instagram_session        # Session file (tidak di-commit ke git)
-│   └── labeling_package/
-│       ├── labeling_dataset.csv
-│       ├── labeling_dataset.json
-│       ├── label_studio_config.json
-│       ├── annotation_guidelines.md
-│       └── labeling_analysis.json
-├── 01_collect_data.py
-├── 02_preprocess_data.py
-├── 03_prepare_labeling.py
+│   ├── scrapped/                 # Raw data from collection
+│   │   ├── tiktok_comments_raw.csv
+│   │   └── youtube_comments_raw.csv
+│   ├── preprocessed/             # Processed data
+│   │   ├── comments_processed.csv
+│   │   ├── preprocessing_analysis.csv
+│   │   └── preprocessing_analysis_detailed.json
+│   └── pipeline_status.json      # Pipeline status tracking
+├── logs/                        # Log files
+│   ├── collect_data.log
+│   ├── preprocessing.log
+│   └── pipeline.log
 ├── Makefile                     # Shortcut commands
 ├── requirements.txt
+├── pyproject.toml
 └── README.md
 ```
 
 ---
 
-## Setup Awal
+## 🚀 Setup Awal
 
 ### 1. Install Dependencies
 
 ```bash
-uv add pandas instaloader
-# atau dari requirements.txt
-uv add -r requirements.txt
+# Install core dependencies
+make install
 ```
-
-### 2. Login Instagram (wajib, jalankan sekali)
-
-Akses komentar Instagram **memerlukan autentikasi**. Gunakan akun dummy/alternatif, bukan akun utama.
+or Explicit with uv
 
 ```bash
-make login
+# Install core dependencies
+uv sync
 ```
 
-Command ini akan meminta username dan password secara interaktif, lalu menyimpan session ke `data/instagram_session`. Session ini akan digunakan otomatis oleh pipeline.
+### 2. Environment Variables
 
-> ⚠️ File `data/instagram_session` jangan di-commit ke Git. Pastikan sudah ada di `.gitignore`.
+Buat file `.env` di root directory:
+
+```bash
+# TikTok scraping (Apify)
+APIFY_TOKEN=your_apify_token_here
+
+# YouTube scraping (Google API)
+YOUTUBE_API_KEY=your_youtube_api_key_here
+```
+
+**Cara mendapatkan API keys**:
+- **Apify Token**: https://console.apify.com/settings/integrations
+- **YouTube API Key**: https://console.cloud.google.com/apis/credentials
 
 ---
 
-## Menjalankan Pipeline
+## 🎯 Menjalankan Pipeline
 
-### Shortcut via Makefile
+### Quick Start (Recommended)
 
 ```bash
-make login        # Login Instagram & simpan session (jalankan sekali)
-make collect      # Stage 1: scraping komentar
-make preprocess   # Stage 2: preprocessing teks
+# Full pipeline dari awal
+make all
+
+# Atau step-by-step
+make collect      # Stage 1: scrap data dari TikTok + YouTube
+make preprocess   # Stage 2: preprocessing & cleaning  
 make label        # Stage 3: persiapan labeling
-make all          # Jalankan full pipeline (collect → preprocess → label)
-make status       # Cek status tiap stage
-make force        # Force rerun semua stage dari awal
-make clean        # Hapus semua output data (hati-hati)
-make help         # Tampilkan semua command
+make status       # Cek status pipeline
 ```
 
-### Manual via Python
+### Platform-Specific Collection
+
+```bash
+# Collect dari semua platform
+make collect
+
+# Platform spesifik
+make collect-tiktok    # TikTok only
+make collect-youtube   # YouTube only
+
+# Force rerun (ignore cache)
+make collect-force
+make preprocess-force
+make label-force
+```
+
+### Manual Execution
 
 ```bash
 # Full pipeline
 uv run python pipelines/main.py --stage all
 
 # Per stage
-uv run python pipelines/main.py --stage collect
+uv run python pipelines/main.py --stage collect --platform all
 uv run python pipelines/main.py --stage preprocess
 uv run python pipelines/main.py --stage label
-
-# Cek status
-uv run python pipelines/main.py --status
 
 # Force rerun
 uv run python pipelines/main.py --stage all --force
@@ -92,127 +130,195 @@ uv run python pipelines/main.py --stage all --force
 
 ---
 
-## Detail Tiap Stage
+## 📋 Detail Pipeline
 
 ### Stage 1 — Data Collection (`01_collect_data.py`)
 
-Scraping komentar dari 2 post target @ferryirwandi:
-- Post 1: Dampak kenaikan harga minyak terhadap fiskal Indonesia
-- Post 2: Narasi penyebab — konflik global & aktor geopolitik
+**Multi-platform scraping dengan robust error handling**:
 
-Fitur:
-- Session-based authentication (wajib login)
-- Rate limiting protection + random delay
-- Retry logic (hingga 10x) dengan exponential backoff
-- Safe attribute access untuk kompatibilitas antar versi instaloader
+**TikTok Scraping**:
+- Method: Apify Actor (`BDec00yAmCm1QbMEI`)
+- Output: `data/scrapped/tiktok_comments_raw.csv`
+- Fitur: Auto-increment filename, retry logic, comprehensive logging
 
-Output: `data/comments_raw.csv`, `data/posts_metadata.csv`, `data/scraping_summary.json`
+**YouTube Scraping**:
+- Method: YouTube Data API v3 (official)
+- Output: `data/scrapped/youtube_comments_raw.csv`
+- Fitur: Rate limiting, metadata extraction, error handling
 
----
+**Field Extraction**:
+- TikTok: `text`, `createTimeISO`, `replyCommentTotal`, `diggCount`
+- YouTube: `text`, `likes_count`, `published_at`, `reply_count`
 
 ### Stage 2 — Preprocessing (`02_preprocess_data.py`)
 
-Pembersihan dan normalisasi teks komentar:
-- Hapus URL, mention, hashtag, emoji
-- Normalisasi slang Bahasa Indonesia
-- Deteksi dan filter spam
-- Analisis kualitas data
+**Platform-agnostic preprocessing dengan stance-aware normalization**:
 
-Output: `data/comments_processed.csv`, `data/preprocessing_analysis.json`, `data/data_quality_report.png`
+**Class Hierarchy**:
+- `BasePreprocessor`: Core preprocessing methods
+- `TiktokPreprocessor`: TikTok-specific data loading
+- `YoutubePreprocessor`: YouTube-specific data loading  
+- `DataPreprocessor`: Main orchestrator
 
----
+**Preprocessing Steps**:
+1. **Text Cleaning**: Remove URLs, mentions, hashtags, emojis, excessive characters
+2. **Slang Normalization**: 200+ Indonesian slang words (including punctuation patterns)
+3. **Stopwords Removal**: Custom stopwords yang **preserve negators** (`tidak`, `bukan`, `jangan`, `mungkin`)
+4. **Spam Detection**: Rule-based spam filtering
+5. **Quality Analysis**: Per-platform dan combined statistics
+
+**Output Files**:
+- `comments_processed.csv`: 4 text variations (raw, clean, normalized, final)
+- `preprocessing_analysis.csv`: Summary statistics
+- `preprocessing_analysis_detailed.json`: Platform-specific analysis
+
+**Key Features**:
+- **Stance-aware**: Negators penting untuk sentiment analysis tidak dihapus
+- **Punctuation handling**: Normalisasi slang seperti `tlg.di` → `tolong.di`
+- **Platform merging**: Combine TikTok + YouTube dengan `source` column
+- **Auto-increment**: Prevent file overwriting
 
 ### Stage 3 — Labeling Preparation (`03_prepare_labeling.py`)
 
 Persiapan dataset untuk anotasi manual di Label Studio:
-- Stratified sampling (300–500 komentar)
-- Export format JSON siap import ke Label Studio
-- Konfigurasi Label Studio (XML)
-- Annotation guidelines
-
-Output: `data/labeling_package/`
+- Stratified sampling per platform
+- Export format JSON untuk Label Studio import
+- Annotation guidelines documentation
 
 ---
 
-## Label Schema
+## 🏷️ Label Schema
 
-| Label | Definisi |
-|---|---|
-| `FAVOR` | Mendukung argumen/posisi Ferry Irwandi |
-| `AGAINST` | Menentang/mengkritik argumen Ferry Irwandi |
-| `PRO_GOV` | Mendukung kebijakan/program pemerintah Indonesia |
-| `CONTRA_GOV` | Menentang/mengkritik kebijakan pemerintah Indonesia |
-| `CONDITIONAL` | Mendukung sebagian, disertai syarat atau catatan kritis |
-| `SUGGESTION` | Memberikan saran atau masukan konstruktif berbasis data |
-| `DISCUSSION` | Reply/diskusi lateral antar netizen |
-| `OFF_TOPIC` | Tidak relevan dengan isu yang dibahas |
+| Label | Definisi | Contoh |
+|---|---|---|
+| `FAVOR` | Mendukung program MBG dan/atau pernyataan Prabowo | "MBG bagus, lanjutkan!" |
+| `AGAINST` | Menentang/mengkritik program MBG dan/atau pernyataan Prabowo | "MBG pemborosan, hentikan!" |
+| `PRO_GOV` | Mendukung kebijakan/program pemerintah secara umum | "Pemerintah sudah benar" |
+| `CONTRA_GOV` | Menentang/mengkritik kebijakan pemerintah secara umum | "Pemerintah tidak peka" |
+| `CONDITIONAL` | Mendukung sebagian, disertai syarat atau catatan kritis | "Boleh MBG asal..." |
+| `SUGGESTION` | Memberikan saran atau masukan konstruktif | "Sebaiknya MBG difokuskan..." |
+| `DISCUSSION` | Reply/diskusi lateral antar pengguna | "Saya setuju dengan komentar..." |
+| `OFF_TOPIC` | Tidak relevan dengan isu yang dibahas | "Promo produk nih" |
 
-> Skema: **single-label** — satu komentar = satu label paling dominan.
-
----
-
-## Alur Kerja Lengkap (End-to-End)
-
-```
-make login
-    ↓
-make collect          → ~4.581 komentar dari 2 post
-    ↓
-make preprocess       → cleaning, normalisasi, filter spam
-    ↓
-make label            → sampling + export ke Label Studio
-    ↓
-[Manual] Import labeling_dataset.json ke Label Studio
-    ↓
-[Manual] Anotasi 300–500 sampel oleh 2–3 annotator
-    ↓
-[Manual] Hitung Cohen's Kappa (target κ ≥ 0.6)
-    ↓
-[Next] Fine-tuning IndoBERT
-```
+> **Skema**: Single-label — satu komentar = satu label dominan
 
 ---
 
-## Logging
+## 📈 Pipeline Status & Monitoring
 
-| File | Isi |
-|---|---|
-| `scraping.log` | Log stage collect |
-| `preprocessing.log` | Log stage preprocess |
-| `labeling.log` | Log stage label |
-| `pipeline.log` | Log keseluruhan pipeline |
-
----
-
-## Troubleshooting
-
-### `Login required` saat collect
-Session tidak ditemukan atau sudah expired.
+**Current Status** (as of latest run):
 ```bash
-make login   # buat ulang session
+make status
 ```
 
-### `403 Forbidden` dari graphql
-Normal terjadi di awal — instaloader akan retry otomatis. Jika terus gagal, tunggu beberapa menit sebelum coba lagi (Instagram rate limit).
+**Log Files**:
+- `logs/collect_data.log`: Data collection logs
+- `logs/preprocessing.log`: Preprocessing logs  
+- `logs/pipeline.log`: Overall pipeline logs
 
-### `AttributeError` pada comment object
-Versi instaloader tidak kompatibel. Pastikan menggunakan versi terbaru:
+**Quality Metrics**:
+- **Total Collected**: 5.186 comments (3.903 TikTok + 1.283 YouTube)
+- **After Preprocessing**: ~3.500+ comments (spam filtered)
+- **Slang Coverage**: 200+ Indonesian slang patterns
+- **Negator Preservation**: ✅ Critical for stance classification
+
+---
+
+## 🛠️ Available Commands
+
+### Pipeline Commands
 ```bash
-uv add instaloader --upgrade
+make all              # Full pipeline
+make collect          # Collect all platforms
+make collect-tiktok   # TikTok only
+make collect-youtube  # YouTube only
+make preprocess       # Preprocessing
+make label            # Labeling preparation
+make status           # Check pipeline status
 ```
 
-### Session expired di tengah scraping
-Instagram session bisa expire dalam beberapa jam. Jika terjadi di tengah proses:
+### Force Rerun
 ```bash
-make login   # login ulang
-make collect # jalankan ulang collect
+make collect-force    # Force collect
+make preprocess-force # Force preprocessing
+make label-force      # Force labeling
+make force            # Force all stages
+```
+
+### Utilities
+```bash
+make clean            # Delete all output data
+make help             # Show all commands
 ```
 
 ---
 
-## Catatan Penting
+## 🔧 Troubleshooting
 
-- Gunakan **akun Instagram dummy** untuk login, bukan akun utama
-- Jangan commit `data/instagram_session` ke Git
-- Scraping 4.500+ komentar membutuhkan waktu ~15–30 menit tergantung koneksi dan rate limit
-- Untuk keperluan akademik, dokumentasikan metode scraping di bab metodologi skripsi
+### API Key Issues
+```bash
+# Missing APIFY_TOKEN
+Error: APIFY_TOKEN not found in .env - Tiktok scraping will be disabled
+
+# Missing YOUTUBE_API_KEY  
+Error: YOUTUBE_API_KEY not found in .env - YouTube scraping will be disabled
+```
+
+**Solution**: Tambahkan API keys ke file `.env`
+
+### Pipeline Status Issues
+```bash
+# "Data collection must be completed first"
+make collect-force    # Force rerun collection
+```
+
+### Preprocessing Issues
+```bash
+# Check preprocessing logs
+tail -f logs/preprocessing.log
+
+# Force rerun preprocessing
+make preprocess-force
+```
+
+### Rate Limiting
+- **YouTube**: 10.000 API units/hari (gratis)
+- **TikTok**: Tergantung Apify credit
+- **Solution**: Tunggu beberapa menit, gunakan `--force` untuk retry
+
+---
+
+## 📚 Research Notes
+
+### Key Design Decisions
+- **Dual Platform**: TikTok + YouTube untuk analisis komparatif
+- **Stance Classification**: Lebih kaya dari sentiment analysis
+- **IndoBERT**: Pre-trained Bahasa Indonesia, lebih relevan
+- **Negator Preservation**: Critical untuk stance detection
+- **Platform-Specific Preprocessing**: Handle different data formats
+
+### Expected Deliverables
+1. **Model**: IndoBERT fine-tuned untuk stance classification
+2. **Dataset**: Multi-platform labeled dataset
+3. **Analysis**: Distribusi stance opini publik terhadap MBG
+4. **Insights**: Perbandingan TikTok vs YouTube stance patterns
+
+### Next Steps (After Labeling)
+1. Manual labeling di Label Studio (300-500 samples)
+2. Fine-tuning IndoBERT dengan labeled data
+3. Model evaluation & confusion matrix analysis
+4. Stance distribution analysis & visualization
+
+---
+
+## 📄 Documentation
+
+- **Research Context**: `research_context.md` - Detail penelitian lengkap
+- **Annotation Guidelines**: Referensi untuk labeling
+- **Pipeline Logs**: `logs/` folder untuk debugging
+- **Data Analysis**: `data/preprocessed/preprocessing_analysis_*.json`
+
+---
+
+*Last updated: 2026-03-24*  
+*Pipeline Status: ✅ Data Collection & Preprocessing Completed*

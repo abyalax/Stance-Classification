@@ -1,5 +1,5 @@
 # Research Context Documentation
-## Stance Classification Opini Publik terhadap Isu Ketahanan Energi dan Kebijakan Fiskal Indonesia
+## Stance Classification Opini Publik terhadap Program Makan Bergizi Gratis (MBG)
 
 ---
 
@@ -7,142 +7,143 @@
 
 | Item | Detail |
 |---|---|
-| **Judul** | Stance Classification Opini Publik terhadap Isu Ketahanan Energi dan Kebijakan Fiskal Indonesia pada Komentar Instagram Menggunakan IndoBERT (Studi Kasus: Akun @ferryirwandi) |
+| **Judul** | Stance Classification Opini Publik terhadap Program Makan Bergizi Gratis (MBG) pada Komentar Media Sosial Menggunakan IndoBERT |
 | **Jenjang** | Skripsi S1 |
 | **Metode Utama** | Stance Classification dengan Fine-tuned IndoBERT |
-| **Platform Data** | Instagram (@ferryirwandi) |
-| **Total Data** | 4.581 komentar dari 2 post |
+| **Platform Data** | TikTok + YouTube |
+| **Total Data** | 5.186 komentar (3.903 TikTok + 1.283 YouTube) |
 
 ---
 
-## 2. Sumber Data
+## 2. Latar Belakang & Konteks Isu
 
-### Post 1 — Dampak Kenaikan Harga Minyak terhadap Indonesia
-Analisis dampak kenaikan harga minyak ($105–110/barel) terhadap Indonesia dalam 3 dimensi utama:
+Presiden Prabowo Subianto memastikan program **Makan Bergizi Gratis (MBG)** tetap berjalan di tengah tekanan efisiensi anggaran akibat dampak konflik Timur Tengah terhadap harga energi global. Pernyataan ini disampaikan dalam sesi diskusi bersama jurnalis dan pengamat yang ditayangkan di YouTube pada **22 Maret 2026**.
 
-- **Shock Fiskal** — Subsidi energi membengkak ±Rp330T/tahun (selisih dari asumsi APBN $70–80)
-- **Neraca Pembayaran** — Tambahan impor energi ~$10 miliar/tahun (Indonesia = net importer)
-- **Rupiah & Moneter** — Capital outflow + demand USD naik → inflasi & tekanan suku bunga
-
-**Risiko yang disoroti:**
-- Defisit APBN berpotensi tembus >3% PDB
-- Program MBG (~Rp335T) mempersempit ruang fiskal jika tidak efisien
-
-**Strategi kebijakan yang diusulkan Ferry:**
-- *Short term:* tahan harga BBM/listrik + stabilisasi rupiah
-- *Mid term:* reprioritasi APBN + subsidi lebih targeted
-- *Long term:* kurangi impor energi (biofuel, efisiensi)
+Isu ini memicu perdebatan publik yang luas karena menyentuh beberapa dimensi sekaligus:
+- **Fiskal** — ruang APBN yang semakin sempit akibat subsidi energi membengkak
+- **Program sosial** — efektivitas dan efisiensi MBG di lapangan
+- **Insiden** — kasus keracunan massal terkait program MBG
+- **Prioritas kebijakan** — apakah MBG tetap relevan saat ekonomi global tertekan
 
 ---
 
-### Post 2 — Narasi Penyebab: Energi & Konflik Global
-Analisis berbasis report LNG & capital flow:
+## 3. Sumber Data
 
-- Konflik global sebagai driver kenaikan harga energi (oil & gas)
-- Disrupsi jalur kunci (Selat Hormuz) → potensi lonjakan harga global
-- Klaim: ada aktor global termasuk Donald Trump yang dianggap diuntungkan/mendorong eskalasi
+### Platform & Volume
 
-> **Catatan penting:** Ferry sendiri mengakui bahwa insight energi bersifat faktual (supply disruption → harga naik), namun klaim aktor & niat politik bersifat **opini/spekulatif**.
+| Platform | Sumber | Jumlah Komentar |
+|---|---|---|
+| **TikTok** | Video pernyataan Prabowo MBG (22 Maret) | 3.903 |
+| **YouTube** | Video pernyataan Prabowo MBG (22 Maret) | 1.283 |
+| **Total** | | **5.186** |
 
----
+### Tools Scraping
 
-### Relasi Antar Post
+| Platform | Method | Tool |
+|---|---|---|
+| TikTok | Browser automation via cloud | Apify actor `BDec00yAmCm1QbMEI` |
+| YouTube | Official API | YouTube Data API v3 (gratis, quota 10.000 unit/hari) |
 
-```
-Post 2 (Penyebab)                    Post 1 (Dampak)
-Supply disruption energi global  →   Fiskal, Rupiah, Neraca Pembayaran Indonesia
-Konflik global / aktor geopolitik →  Tekanan APBN & program pemerintah (MBG)
-```
+### Output File
 
----
-
-## 3. Objektif Penelitian
-
-1. Membangun model stance classification berbasis IndoBERT untuk komentar Instagram berbahasa Indonesia
-2. Menganalisis distribusi stance opini publik terhadap isu ketahanan energi dan kebijakan fiskal Indonesia
-3. Mengidentifikasi pola opini netizen: pro/kontra pemerintah, dukungan/sanggahan terhadap analisis Ferry, saran konstruktif
+| File | Isi |
+|---|---|
+| `tiktok_comments_raw.csv` | 3.903 komentar mentah dari TikTok |
+| `youtube_comments_raw.csv` | 1.283 komentar mentah dari YouTube |
 
 ---
 
-## 4. Label Schema (Final)
+## 4. Objektif Penelitian
+
+1. Membangun model stance classification berbasis IndoBERT untuk komentar media sosial berbahasa Indonesia
+2. Menganalisis distribusi stance opini publik terhadap program MBG
+3. Membandingkan pola stance antara platform TikTok vs YouTube terhadap isu yang sama
+4. Mengidentifikasi dominasi opini: pro/kontra pemerintah, saran konstruktif, diskusi kritis
+
+---
+
+## 5. Label Schema (Final)
 
 | Label | Definisi Singkat |
 |---|---|
-| `FAVOR` | Mendukung argumen/posisi Ferry Irwandi |
-| `AGAINST` | Menentang/mengkritik argumen Ferry Irwandi |
-| `PRO_GOV` | Mendukung kebijakan/program pemerintah Indonesia |
-| `CONTRA_GOV` | Menentang/mengkritik kebijakan pemerintah Indonesia |
+| `FAVOR` | Mendukung program MBG dan/atau pernyataan Prabowo |
+| `AGAINST` | Menentang/mengkritik program MBG dan/atau pernyataan Prabowo |
+| `PRO_GOV` | Mendukung kebijakan/program pemerintah secara umum |
+| `CONTRA_GOV` | Menentang/mengkritik kebijakan pemerintah secara umum |
 | `CONDITIONAL` | Mendukung sebagian, disertai syarat atau catatan kritis |
 | `SUGGESTION` | Memberikan saran atau masukan konstruktif berbasis data |
-| `DISCUSSION` | Reply/diskusi lateral antar netizen |
+| `DISCUSSION` | Reply/diskusi lateral antar pengguna |
 | `OFF_TOPIC` | Tidak relevan dengan isu yang dibahas |
 
 > Skema: **single-label**, satu komentar = satu label dominan.
 
 ---
 
-## 5. Pipeline Penelitian
+## 6. Pipeline Penelitian
 
 ```
-1. Data Collection
-   └── Scraping 4.581 komentar dari 2 post @ferryirwandi
-   └── Link Post 1 : https://www.instagram.com/p/DVscrIakZKd/
-   └── Link Post 2 : https://www.instagram.com/p/DVtbswgk4h6/
-       (tools: Instaloader)
+1. Data Collection ✅
+   ├── TikTok  : 3.903 komentar via Apify
+   └── YouTube : 1.283 komentar via YouTube Data API v3
 
 2. Preprocessing
-   └── Cleaning: remove spam, URL, duplikat
-   └── Normalisasi slang Bahasa Indonesia
-   └── Estimasi data bersih: ~3.500–4.000 komentar
+   ├── Merge & deduplication (TikTok + YouTube)
+   ├── Cleaning: remove spam, URL, emoji, duplikat
+   ├── Normalisasi slang Bahasa Indonesia
+   └── Estimasi data bersih: ~4.000–4.500 komentar
 
 3. Labelling
-   └── Manual: 300–500 sampel (stratified sampling)
-   └── Tools: Label Studio (self-hosted)
-   └── Annotator: minimal 2–3 orang
-   └── Validasi: Cohen's Kappa (target κ ≥ 0.6)
+   ├── Manual: 300–500 sampel (stratified sampling per platform)
+   ├── Tools: Label Studio (self-hosted)
+   ├── Annotator: minimal 2–3 orang
+   ├── Validasi: Cohen's Kappa (target κ ≥ 0.6)
    └── Auto-label sisanya: IndoBERT existing sebagai silver label
 
 4. Fine-tuning IndoBERT
-   └── Model base: IndoBERT (indobenchmark/indobert-base-p1)
-   └── Split: 70% train / 15% val / 15% test
+   ├── Model base: IndoBERT (indobenchmark/indobert-base-p1)
+   ├── Split: 70% train / 15% val / 15% test
    └── Task: multi-class classification (8 label)
 
 5. Evaluasi Model
-   └── Metrics: F1-score (macro & weighted), Precision, Recall
+   ├── Metrics: F1-score (macro & weighted), Precision, Recall
    └── Confusion matrix per label
 
 6. Analisis & Visualisasi Hasil
-   └── Distribusi stance keseluruhan
-   └── Perbandingan distribusi stance Post 1 vs Post 2
-   └── Insight opini publik terhadap isu fiskal & energi
+   ├── Distribusi stance keseluruhan
+   ├── Perbandingan stance TikTok vs YouTube
+   └── Insight opini publik terhadap program MBG
 ```
 
 ---
 
-## 6. Output & Kontribusi Penelitian
+## 7. Output & Kontribusi Penelitian
 
 ### Output Teknis
-- Model IndoBERT fine-tuned untuk stance classification komentar Instagram Bahasa Indonesia
-- Dataset berlabel (annotation + komentar) sebagai aset penelitian
+- Model IndoBERT fine-tuned untuk stance classification komentar media sosial Bahasa Indonesia
+- Dataset berlabel multi-platform (TikTok + YouTube) sebagai aset penelitian
 
 ### Output Analitis
-- Distribusi stance opini publik terhadap isu ketahanan energi & kebijakan fiskal Indonesia
-- Perbandingan stance antara isu penyebab (Post 2) vs dampak (Post 1)
-- Insight: dominasi label apa yang muncul (kritik konstruktif, dukungan bersyarat, dll)
+- Distribusi stance opini publik terhadap program MBG
+- Perbandingan pola stance antar platform (TikTok vs YouTube)
+- Insight: apakah publik lebih banyak mendukung, mengkritik, atau memberi saran terhadap MBG
 
 ### Kontribusi Akademik
-- Benchmark stance classification untuk domain ekonomi-fiskal berbahasa Indonesia
-- Validasi efektivitas IndoBERT pada konteks diskusi kebijakan publik di Instagram
+- Benchmark stance classification untuk domain kebijakan sosial berbahasa Indonesia
+- Studi komparatif opini publik lintas platform media sosial
+- Validasi efektivitas IndoBERT pada konteks diskusi kebijakan publik
 
 ---
 
-## 7. Deliverables Penelitian
+## 8. Deliverables Penelitian
 
 | Deliverable | Status |
 |---|---|
 | Annotation Guideline (`.docx`) | ✅ Selesai |
 | Research Context Documentation (`.md`) | ✅ Dokumen ini |
-| Scraping script | 🔲 Belum |
+| Scraping script — TikTok (Apify) | ✅ Selesai |
+| Scraping script — YouTube (Official API) | ✅ Selesai |
+| Raw data TikTok (3.903 komentar) | ✅ Selesai |
+| Raw data YouTube (1.283 komentar) | ✅ Selesai |
 | Preprocessing script | 🔲 Belum |
 | Label Studio config (XML) | ✅ Tercantum di Annotation Guideline |
 | Fine-tuning script IndoBERT | 🔲 Belum |
@@ -150,18 +151,21 @@ Konflik global / aktor geopolitik →  Tekanan APBN & program pemerintah (MBG)
 
 ---
 
-## 8. Catatan & Keputusan Desain
+## 9. Catatan & Keputusan Desain
 
 | Keputusan | Alasan |
 |---|---|
-| Stance classification, bukan sentiment analysis | Dataset terlalu kaya untuk sekadar positif/negatif/netral |
+| Ganti platform Instagram → TikTok + YouTube | Instagram memblokir scraping secara agresif sejak 2024 |
+| Ganti topik geopolitik → MBG | MBG lebih focused, lebih relevan publik, lebih banyak source |
+| Dual platform (TikTok + YouTube) | Memperkaya data, memungkinkan analisis komparatif antar platform |
+| YouTube pakai Official API (bukan Apify) | Gratis, reliable, tidak ada risiko block atau credit habis |
+| Stance classification, bukan sentiment analysis | Dataset kaya — komentar berisi saran, kritik bersyarat, diskusi multi-dimensi |
 | Single-label per komentar | Feasible untuk S1, mengurangi kompleksitas training |
-| 8 label (bukan 3) | Mencerminkan kekayaan diskusi: saran, bersyarat, pro/kontra pemerintah |
+| 8 label | Mencerminkan kekayaan diskusi: saran, bersyarat, pro/kontra pemerintah |
 | IndoBERT bukan mBERT | Pre-trained pada corpus Bahasa Indonesia, lebih relevan secara linguistik |
-| Studi kasus 2 post saja | Fokus pada konteks isu yang koheren dan terdefinisi |
-| Tidak membedakan klaim faktual vs spekulatif | Di luar scope S1, cukup labeli stance-nya |
+| Studi kasus spesifik (pernyataan Prabowo 22 Maret) | Konteks isu koheren, memudahkan interpretasi hasil |
 
 ---
 
 *Dokumen ini adalah living document — update setiap ada keputusan desain baru.*
-*Last updated: 2026-03-23*
+*Last updated: 2026-03-24*

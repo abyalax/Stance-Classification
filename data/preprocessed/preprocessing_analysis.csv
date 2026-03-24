@@ -1,0 +1,2 @@
+total_comments,platforms,avg_text_length,avg_word_count,avg_likes_per_comment,max_likes,min_likes,avg_reply_count,comments_with_no_likes,comments_with_likes,comments_with_replies
+3541,"['tiktok', 'youtube']",85.56481219994352,13.994069471900593,5.033888731996611,2696,0,0.45685840707964603,2831,710,138

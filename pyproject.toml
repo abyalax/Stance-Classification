@@ -1,7 +1,7 @@
 [project]
 name = "stance-classification"
 version = "0.1.0"
-description = "Add your description here"
+description = "Stance Classification Opini Publik terhadap Program Makan Bergizi Gratis (MBG)"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -9,6 +9,7 @@ dependencies = [
     "apify-client>=2.5.0",
     "clean-text>=0.7.1",
     "datasets>=4.8.3",
+    "google-api-python-client>=2.193.0",
     "instaloader>=4.15.1",
     "matplotlib>=3.10.8",
     "nltk>=3.9.3",
@@ -22,4 +23,8 @@ dependencies = [
     "seqeval>=1.2.2",
     "tqdm>=4.67.3",
     "transformers>=5.3.0",
+    "regex>=2023.12.25",
+    "Sastrawi==1.0.1",
+    "requests==2.31.0",
+    "python-dotenv==1.0.1",
 ]
