@@ -5,8 +5,11 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./mydata:/label-studio/data
-    command: label-studio
+      - label_studio_data:/label-studio/data
+    command: label-studio start --log-level INFO
     stdin_open: true
     tty: true
     restart: unless-stopped
+
+volumes:
+  label_studio_data:

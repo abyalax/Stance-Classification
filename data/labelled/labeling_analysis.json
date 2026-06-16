@@ -1,0 +1,19 @@
+{
+  "total_comments": 3542,
+  "platform_distribution": {
+    "tiktok": 2625,
+    "youtube": 917
+  },
+  "text_length_stats": {
+    "mean": 9.838226990400903,
+    "median": 7.0,
+    "min": "1",
+    "max": "154"
+  },
+  "spam_ratio": 0.0,
+  "quality_indicators": {
+    "comments_3_50_words": "3129",
+    "non_spam": "3542",
+    "unique_texts": 3468
+  }
+}

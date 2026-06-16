@@ -484,9 +484,8 @@ class TiktokPreprocessor(BasePreprocessor):
     """TikTok-specific data preprocessor"""
 
     def __init__(self, data_dir: str = "data"):
-        # Initialize raw data directory for loading
+        # Initialize raw data directory for loading (don't create - only read)
         self.raw_data_dir = Path(data_dir) / "scrapped"
-        self.raw_data_dir.mkdir(parents=True, exist_ok=True)
 
         # Initialize parent for preprocessing methods (output to preprocessed)
         super().__init__(data_dir)
@@ -596,9 +595,8 @@ class YoutubePreprocessor(BasePreprocessor):
     """YouTube-specific data preprocessor"""
 
     def __init__(self, data_dir: str = "data"):
-        # Initialize raw data directory for loading
+        # Initialize raw data directory for loading (don't create - only read)
         self.raw_data_dir = Path(data_dir) / "scrapped"
-        self.raw_data_dir.mkdir(parents=True, exist_ok=True)
 
         # Initialize parent for preprocessing methods (output to preprocessed)
         super().__init__(data_dir)
@@ -745,8 +743,8 @@ class DataPreprocessor:
         """Preprocess the combined dataset"""
         logger.info("Starting combined data preprocessing...")
 
-        # Use base preprocessing methods
-        base_processor = BasePreprocessor(self.data_dir)
+        # Use base preprocessing methods (pass parent directory to avoid nested folder)
+        base_processor = BasePreprocessor(str(Path(self.data_dir).parent))
 
         df_processed = df.copy()
 
