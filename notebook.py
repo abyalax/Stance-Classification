@@ -32,11 +32,7 @@ from pathlib import Path
 # Visualization
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-try:
-    from wordcloud import WordCloud
-except ImportError:
-    WordCloud = None
+from wordcloud import WordCloud
 
 # Import pipeline modules directly
 import importlib.util
