@@ -344,37 +344,6 @@ class BasePreprocessor:
         }
         return slang_dict
 
-    def clean_text(self, text: str) -> str:
-        """Clean individual text"""
-        if not isinstance(text, str) or pd.isna(text):
-            return ""
-
-        # Convert to lowercase
-        text = text.lower()
-
-        # Remove URLs
-        text = self.url_pattern.sub(" ", text)
-
-        # Remove mentions
-        text = self.mention_pattern.sub(" ", text)
-
-        # Remove hashtags (keep the text without #)
-        text = self.hashtag_pattern.sub(" ", text)
-
-        # Remove emojis
-        text = self.emoji_pattern.sub(" ", text)
-
-        # Remove excessive characters (more than 2 consecutive)
-        text = self.excessive_pattern.sub(r"\1\1", text)
-
-        # Remove numbers
-        text = self.number_pattern.sub(" ", text)
-
-        # Remove extra whitespace
-        text = re.sub(r"\s+", " ", text).strip()
-
-        return text
-
     def normalize_slang(self, text: str) -> str:
         """Normalize Indonesian slang words"""
         # First, handle specific patterns with punctuation
@@ -478,7 +447,6 @@ class BasePreprocessor:
 
 
 # ─── TikTok Preprocessor ─────────────────────────────────────────────────────
-
 
 class TiktokPreprocessor(BasePreprocessor):
     """TikTok-specific data preprocessor"""

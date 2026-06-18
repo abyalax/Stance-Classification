@@ -1,0 +1,14 @@
+[
+  {
+    "model":"lda",
+    "n_topics":5,
+    "topic_coherence_npmi":0.1256400899,
+    "topic_diversity":0.82
+  },
+  {
+    "model":"nmf",
+    "n_topics":5,
+    "topic_coherence_npmi":0.1690952988,
+    "topic_diversity":0.84
+  }
+]

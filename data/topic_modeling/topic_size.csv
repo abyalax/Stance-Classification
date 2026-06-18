@@ -1,0 +1,11 @@
+model,dominant_topic,count
+lda,0,788
+lda,1,581
+lda,2,636
+lda,3,765
+lda,4,841
+nmf,0,592
+nmf,1,2309
+nmf,2,141
+nmf,3,88
+nmf,4,481

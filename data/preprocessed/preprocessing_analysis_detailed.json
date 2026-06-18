@@ -1,36 +1,36 @@
 {
   "overall": {
-    "total_comments": 3542,
+    "total_comments": 3611,
     "platforms": [
       "tiktok",
       "youtube"
     ],
-    "avg_text_length": 85.55138339920948,
-    "avg_word_count": 13.992377188029362,
-    "avg_likes_per_comment": 5.032749858836815,
-    "max_likes": "2696",
+    "avg_text_length": 84.5679867072833,
+    "avg_word_count": 13.847687621157574,
+    "avg_likes_per_comment": 5.762946552201607,
+    "max_likes": "3942",
     "min_likes": "0",
-    "avg_reply_count": 0.45685840707964603,
-    "comments_with_no_likes": "2831",
-    "comments_with_likes": "711",
-    "comments_with_replies": "138"
+    "avg_reply_count": 0.4858242912145607,
+    "comments_with_no_likes": "2902",
+    "comments_with_likes": "709",
+    "comments_with_replies": "137"
   },
   "by_platform": {
     "tiktok": {
-      "total_comments": 2625,
-      "avg_text_length": 71.81866666666667,
-      "avg_word_count": 12.107047619047618,
-      "avg_likes_per_comment": 5.7001904761904765,
-      "max_likes": "2696",
+      "total_comments": 2694,
+      "avg_text_length": 70.76057906458797,
+      "avg_word_count": 11.961395694135115,
+      "avg_likes_per_comment": 6.661841128433556,
+      "max_likes": "3942",
       "min_likes": "0",
-      "avg_reply_count": 0.403899721448468,
-      "comments_with_no_likes": "2093",
-      "comments_with_likes": "532",
-      "comments_with_replies": "78"
+      "avg_reply_count": 0.4505154639175258,
+      "comments_with_no_likes": "2164",
+      "comments_with_likes": "530",
+      "comments_with_replies": "77"
     },
     "youtube": {
       "total_comments": 917,
-      "avg_text_length": 124.86259541984732,
+      "avg_text_length": 125.1319520174482,
       "avg_word_count": 19.389312977099237,
       "avg_likes_per_comment": 3.122137404580153,
       "max_likes": "272",

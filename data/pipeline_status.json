@@ -1,15 +1,15 @@
 {
   "data_collection": {
     "completed": true,
-    "timestamp": "2026-03-24T10:09:12.077596+00:00",
+    "timestamp": "2026-06-16T15:08:49.818095+00:00",
     "platform": "all",
-    "total_items": 3903
+    "total_items": 4000
   },
   "preprocessing": {
     "completed": true,
-    "timestamp": "2026-03-25T08:06:03.895211+00:00",
-    "total_processed": 3542,
-    "spam_filtered": 1644
+    "timestamp": "2026-06-16T15:11:28.885543+00:00",
+    "total_processed": 3611,
+    "spam_filtered": 1672
   },
   "labeling_preparation": {
     "completed": true,

@@ -3,6 +3,8 @@
 
 PYTHON = uv run python
 PIPELINE = pipelines/main.py
+TOPICS ?= 5
+WORDS ?= 10
 
 .DEFAULT_GOAL := help
 
@@ -74,6 +76,16 @@ label:
 label-force:
 	$(PYTHON) $(PIPELINE) --stage label --force
 
+## Stage UAS: Topic modeling LDA dan NMF
+## command: make topic
+topic:
+	$(PYTHON) pipelines/04_topic_modeling.py --topics $(TOPICS) --words $(WORDS)
+
+## Stage UAS: Topic modeling dengan jumlah topik khusus
+## command: make topic-topics TOPICS=5
+topic-topics:
+	$(PYTHON) pipelines/04_topic_modeling.py --topics $(TOPICS) --words $(WORDS)
+
 ## Cek status tiap stage pipeline
 ## command: make status
 status:
@@ -107,4 +119,4 @@ help:
 	@echo "  make install -> make all"
 	@echo ""
 
-.PHONY: install all collect collect-force preprocess preprocess-force label label-force status force clean help
+.PHONY: install all collect collect-force preprocess preprocess-force label label-force topic topic-topics status force clean help

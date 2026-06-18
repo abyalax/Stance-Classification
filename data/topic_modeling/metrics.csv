@@ -1,0 +1,3 @@
+model,n_topics,topic_coherence_npmi,topic_diversity
+lda,5,0.1256400898629856,0.82
+nmf,5,0.1690952987649315,0.84

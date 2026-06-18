@@ -97,13 +97,19 @@ TIKTOK_RUN_INPUT = {
 }
 
 # Configure logging
+script_dir = Path(__file__).parent.parent
+logs_dir = script_dir / "logs"
+logs_dir.mkdir(parents=True, exist_ok=True)
+log_file = logs_dir / "collect_data.log"
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("logs/collect_data.log"), logging.StreamHandler()],
+    handlers=[logging.FileHandler(str(log_file)), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
+APIFY_CLIENT_ACTOR="BDec00yAmCm1QbMEI"
 
 class TiktokScraper:
     def __init__(self, data_dir: str = "data"):
@@ -121,7 +127,7 @@ class TiktokScraper:
         logger.info("Tiktok Scrapping")
         logger.info("=" * 50)
 
-        run = self.apify_client.actor("BDec00yAmCm1QbMEI").call(
+        run = self.apify_client.actor(APIFY_CLIENT_ACTOR).call(
             run_input=TIKTOK_RUN_INPUT
         )
 
@@ -140,7 +146,6 @@ YOUTUBE_TARGET_URLS = [
 ]
 
 YOUTUBE_MAX_COMMENTS = 5000  # per video, set None for unlimited
-
 
 class YoutubeScraper:
     def __init__(self, data_dir: str = "data"):
